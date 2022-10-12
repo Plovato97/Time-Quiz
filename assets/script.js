@@ -1,4 +1,4 @@
-const quizQuestions = [
+const questions = [
     {
         question: "Inside which HTML element do we put the JavaScript?",
         choices: ["a. <js>", "b. <javascript>", "c. <scripting>", "d. <script>"],
@@ -21,12 +21,12 @@ const quizQuestions = [
     },
     {
         question: "How do you create a function in JavaScript",
-        choices: ["a. function = myFunction()", "b. function myFunction()", "c. function:myFunction()"],
+        choices: ["a. function = myFunction()", "b. function myFunction()", "c. function:myFunction()", "d. createMyFunction()"],
         answer: "b. function myFunction()"
     },
     {
         question: "How do you call a function named myFunction?",
-        choices: ["a. call myFunction()", "b. call function myFunction()", "c. myFunction()"],
+        choices: ["a. call myFunction()", "b. call function myFunction()", "c. myFunction()", "d. call myFunction"],
         answer: "c. myFunctions()"
     },
     {
@@ -41,7 +41,7 @@ const quizQuestions = [
     },
     {
         question: "Who invented JavaScript?",
-        choices: ["a. Douglas Crockford", "b. Sheryl Sandberg", "c. Brendan Eich"],
+        choices: ["a. Douglas Crockford", "b. Sheryl Sandberg", "c. Brendan Eich", "d. Ben Javascript"],
         answer: "c. Brendan Eich"
     },
     {
@@ -51,7 +51,7 @@ const quizQuestions = [
     },
     {
         question: "How do you add a comment in a JavaScript?",
-        choices: ["a. //This is a comment", "b. <!--This is a comment-->", "c. 'This is a comment"],
+        choices: ["a. //This is a comment", "b. <!--This is a comment-->", "c. 'This is a comment", "d. * This is a comment *"],
         answer: "a. //This is a comment"
     },
     {
@@ -61,52 +61,143 @@ const quizQuestions = [
     }
 ];
 
+/** 
+ * DEFINE VARIABLES 
+ */
 
 // grab references to elements
-var startQuizSection = document.getElementById("start");
+var time = document.getElementById("timer");
+var timeLeft = document.getElementById("timeLeft");
+
+var startDiv = document.getElementById("start");
 var startQuizBtn = document.getElementById("start-quiz-button");
-var gameTimer = document.getElementById("timer");
-var questionTitle = document.getElementById("quiz-header");
-var questionChoices = document.getElementById("choices");
-var enterInitialsSection = document.getElementById("your-initials");
+
+var questionDiv = document.getElementById("questionDiv");
+var questionTitle = document.getElementById("questionTitle");
+var choiceA = document.getElementById("btn0");
+var choiceB = document.getElementById("btn1");
+var choiceC = document.getElementById("btn2");
+var choiceD = document.getElementById("btn3");
+var answerCheck = document.getElementById("answerCheck");
+
+var summary = document.getElementById("summary");
 var enterInitialsSubmit = document.getElementById("submit-initials");
 var highScoresSection = document.getElementById("scores");
 var viewHighScores = document.getElementById("view-high-score");
+var everything = document.getElementById("everything");
+
+var highScoreDiv = document.getElementById("highScore");
 
 // define other variables
 var correctAns = 0;
 var questionNum = 0;
+var scoreResult;
+var highScore = [];
+var questionIndex = 0;
 
-// WHEN I click the start button
-function startQuiz() {
+/**
+ * FUNCTIONS
+ */
 
-    // clock timer starts
-    startCountDown();
-
-    // clear the start section and show question title in h1
-    startQuizSection.setAttribute("style", "display: none;");
-    questionTitle.textContent = quizQuestions[questionNum].title;
-    showChoices();
-
-}
-
-// THEN a timer starts
+// WHEN I click the start button, timer starts
+var totalTime = 121;
 function startCountDown() {
+    startDiv.style.display = "none";
+    showQuiz();
+    // var incorrectPenalty = 10;
+    var startTimer = setInterval(function() {
+        totalTime--;
+        timeLeft.textContent = totalTime;
+        if(totalTime <= 0) {
+            gameOver();
+            timer.textContent = "Time's Up!";
+            clearInterval(startTimer);
+        }
+    },1000);
+};
+
+// console.log(questions[questionIndex].question);
+// console.log(questions[questionIndex].choices);
+
+// then presented with questions and choices
+function showQuiz() {
+    questionDiv.style.display = "block";
+    nextQuestion();
 }
 
-// presented with a question
-function showChoices() {
-
+function nextQuestion() {
+    questionTitle.textContent = questions[questionIndex].question;
+    choiceA.textContent = questions[questionIndex].choices[0];
+    choiceB.textContent = questions[questionIndex].choices[1];
+    choiceC.textContent = questions[questionIndex].choices[2];
+    choiceD.textContent = questions[questionIndex].choices[3];
 }
 
 // after question is answered, show if correct or wrong
-function checkAnswer() {
+function checkAnswer(answer) {
+
+    var lineBreak = document.getElementById("lineBreak");
+    lineBreak.style.display = "block";
+    answerCheck.style.display = "block";
+
+    if (answer === questions[questionIndex].choices[answer]) {
+        // correct answer, add 1 score to final score
+        correctAns++;
+        answerCheck.textContent = "Correct!";
+    } else {
+        // wrong answer, deduct 10 second from timer
+        totalTime -= 10;
+        timeLeft.textContent = totalTime;
+        answerCheck.textContent = "Wrong! The correct answer is: " + questions[questionIndex].answer;
+    }
+
+    // repeat with the rest of questions 
+    if (questionIndex < questions.length - 1) {
+        questionIndex++;
+        nextQuestion();
+    } else {
+        // if no more question, show summary end game
+        summary.style.display = "block";
+        questionDiv.style.display = "none";
+    }
 }
 
+function chooseA() {
+    checkAnswer(0);
+}
+
+function chooseB() {
+    checkAnswer(1);
+}
+
+function chooseC() {
+    checkAnswer(2);
+}
+
+function chooseD() {
+    checkAnswer(3);
+}
+
+// when all questions are answered or timer reaches 0, game over
+function gameOver () {
+
+}
+
+// when game over, show all done, and show final score
+
+// add input box to enter initial
+
+// store highscore in local storage
 function storeHighScore () {
+
 }
 
+/**
+ * ADD EVENT LISTENERS
+ */
 
- // ADD EVENT LISTENERS
-
-startQuizBtn.addEventListener("click", startQuiz);
+startQuizBtn.addEventListener("click", startCountDown);
+choiceA.addEventListener("click", chooseA);
+choiceB.addEventListener("click", chooseB);
+choiceC.addEventListener("click", chooseC);
+choiceD.addEventListener("click", chooseD);
