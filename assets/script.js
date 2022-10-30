@@ -102,9 +102,11 @@ var questionIndex = 0;
 // WHEN I click the start button, timer starts
 var totalTime = 151;
 function newQuiz() {
+    correctAns = 0;
     questionIndex = 0;
     totalTime = 150;
     timeLeft.textContent = totalTime;
+    initialInput.value = "";
 
     startDiv.style.display = "none";
     questionDiv.style.display = "block";
